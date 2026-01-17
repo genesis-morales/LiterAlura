@@ -1,9 +1,6 @@
 package com.alura.literalura.model;
 
 import jakarta.persistence.*;
-
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -13,10 +10,25 @@ public class Autor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String fechaNacimiento;
-    private String fechaFallecimiento;
+    private String nombre;
+    private Integer  fechaNacimiento;
+    private Integer  fechaFallecimiento;
 
+    @ManyToMany(mappedBy = "autores")
     private List<Libro> libros;
+
+    public Autor() {}
+
+    public Autor(DatosAutor a) {
+        this.nombre = a.nombre();
+        this.fechaNacimiento = Integer.valueOf(a.fechaNacimiento() != null
+                ? a.fechaNacimiento().toString()
+                : "Desconocido");
+
+        this.fechaFallecimiento = Integer.valueOf(a.fechaFallecimiento() != null
+                ? a.fechaFallecimiento().toString()
+                : "Desconocido");
+    }
 
     public Long getId() {
         return id;
@@ -26,19 +38,27 @@ public class Autor {
         this.id = id;
     }
 
-    public String getFechaNacimiento() {
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public Integer getFechaNacimiento() {
         return fechaNacimiento;
     }
 
-    public void setFechaNacimiento(String fechaNacimiento) {
+    public void setFechaNacimiento(Integer fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
 
-    public String getFechaFallecimiento() {
+    public Integer getFechaFallecimiento() {
         return fechaFallecimiento;
     }
 
-    public void setFechaFallecimiento(String fechaFallecimiento) {
+    public void setFechaFallecimiento(Integer fechaFallecimiento) {
         this.fechaFallecimiento = fechaFallecimiento;
     }
 
@@ -53,9 +73,9 @@ public class Autor {
     @Override
     public String toString() {
         return "\n----- AUTOR -----\n" +
+                "Nombre: " + nombre + "\n" +
                 "Fecha de nacimiento: " + fechaNacimiento + "\n" +
                 "Fecha de fallecimiento: " + fechaFallecimiento + "\n" +
-                "Libros: " + libros + "\n" +
                 "-----------------\n";
     }
 }
