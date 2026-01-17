@@ -10,6 +10,7 @@ import java.util.Optional;
 
 public interface LibroRepository extends JpaRepository<Libro, Long> {
     Optional<Libro> findByTituloContainsIgnoreCase(String nombre);
+    List<Libro> findTop10ByOrderByNumeroDescargasDesc();
 
     @Query("""
     SELECT l FROM Libro l

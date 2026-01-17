@@ -31,12 +31,19 @@ public class Principal {
         var opcion = -1;
         while (opcion != 0) {
             var menu = """
-                    1 - Buscar libros por titulo
-                    2 - Listar libros registrados
-                    3 - Listar autores registrados
-                    4 - Listar autores vivos por año
-                    5 - Listar libros por idiomas              
-                    0 - Salir
+               ==================================
+                      LITERALURA - MENÚ
+               ==================================
+                1 - Buscar libro por título
+                2 - Listar libros registrados
+                3 - Listar autores registrados
+                4 - Listar autores vivos por año
+                5 - Listar libros por idioma
+                6 - Top 10 libros más descargados
+                ----------------------------------
+                0 - Salir
+                ==================================
+                Seleccione una opción:
                     """;
             System.out.println(menu);
             opcion = teclado.nextInt();
@@ -57,6 +64,9 @@ public class Principal {
                     break;
                 case 5:
                     librosPorIdioma();
+                    break;
+                case 6:
+                    top10Libros();
                     break;
                 case 0:
                     System.out.println("Cerrando la aplicación...");
@@ -142,10 +152,17 @@ public class Principal {
 
     private void autoresPorAnnio() {
         System.out.println("Digite el año que deseas buscar:");
-        int annio = teclado.nextInt();
+        String input = teclado.nextLine();
+
+        if (!input.matches("\\d{4}")) {
+            System.out.println("Debe ingresar un año válido (4 dígitos).");
+            return;
+        }
+
+        int annio = Integer.parseInt(input);
         teclado.nextLine();
 
-        List<Autor> autores = autorRepository.autoresVivosEnAnnio(annio);
+        autores = autorRepository.autoresVivosEnAnnio(annio);
 
         if (autores.isEmpty()) {
             System.out.println("No se encontraron autores vivos en ese año.");
@@ -212,6 +229,21 @@ public class Principal {
 
             System.out.println("Número de descargas: " + libro.getNumeroDescargas());
             System.out.println("-----------------\n");
+        });
+    }
+
+    private void top10Libros() {
+        libros = repository.findTop10ByOrderByNumeroDescargasDesc();
+
+        if (libros.isEmpty()) {
+            System.out.println("No se encontraron libros");
+        }
+
+        System.out.println("----- Top 5 libros más descargados -----\n");
+        libros.forEach(libro -> {
+            System.out.println("Título: " + libro.getTitulo());
+            System.out.println("Número de descargas: " + libro.getNumeroDescargas());
+            System.out.println("-----------------------------");
         });
     }
 }
